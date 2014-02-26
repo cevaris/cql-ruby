@@ -1,34 +1,30 @@
 #!/usr/bin/env ruby
 
+require 'thread'
 require 'cassandra-cql'
 require 'json'
 require 'optparse'
 require 'tweetstream'
-
+require 'securerandom'
 
 def connect_db
-	CassandraCQL::Database.new('192.168.3.100:9160')
+  CassandraCQL::Database.new('127.0.0.1:9160')
 end
 
-def connect_twitter
-	creds = JSON.parse(File.read("credentials.json"))
-
-	TweetStream.configure do |config|
-	  config.consumer_key       = creds['consumer_key']
-	  config.consumer_secret    = creds['consumer_secret']
-	  config.oauth_token        = creds['oauth_token']
-	  config.oauth_token_secret = creds['oauth_token_secret']
-	  config.auth_method        = :oauth
-	end
-
+def get_events(args)
+  %{SELECT * FROM eventsks.events 
+    WHERE app_id = #{args[:app_id]}
+    ORDER BY created_at desc 
+    LIMIT 10;}
 end
-
 
 def execute
-	TweetStream::Client.new.sample do |status|
-	  payload = { events: status, app: { id: app.uuid } }.to_json    
-	  puts payload
-	end
+
+  db = connect_db()
+  args = {}
+  args[:app_id] = '4fcd0582-7798-46ac-8ae3-df7ce7890b79'
+  db.execute(get_events())
+
 end
 
 
@@ -37,6 +33,7 @@ end
 
 if __FILE__ == $0
 
+  # STDOUT.sync = true
   options = {}
 
   optparse = OptionParser.new do|opts|
@@ -60,8 +57,6 @@ if __FILE__ == $0
 
   optparse.parse!
 
-  connect_db()
-  connect_twitter()
 
   execute()
 end

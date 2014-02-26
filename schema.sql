@@ -1,11 +1,11 @@
-CREATE KEYSPACE eventsks 
+CREATE KEYSPACE applications
   WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};
 
-USE eventsks;
+USE applications;
 
 CREATE TABLE events (
-  id uuid PRIMARY KEY,
   app_id uuid,
-  created_at timestamp,
-  event text
+  created_at timeuuid,
+  event text,
+  PRIMARY KEY (app_id, created_at)
 );

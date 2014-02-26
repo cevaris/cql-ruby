@@ -12,9 +12,9 @@ def connect_db
 end
 
 def get_events(args)
-  %{SELECT * FROM eventsks.events 
+  %{SELECT * FROM application.events 
     WHERE app_id = #{args[:app_id]}
-    ORDER BY created_at desc 
+    ORDER BY created_at DESC 
     LIMIT 10;}
 end
 
@@ -23,7 +23,8 @@ def execute
   db = connect_db()
   args = {}
   args[:app_id] = '4fcd0582-7798-46ac-8ae3-df7ce7890b79'
-  db.execute(get_events())
+  puts get_events(args)
+  # db.execute(get_events())
 
 end
 

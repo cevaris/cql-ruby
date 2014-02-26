@@ -1,21 +1,18 @@
 #!/usr/bin/env ruby
 
 require 'thread'
-require 'cassandra-cql'
+require 'cql'
 require 'json'
 require 'optparse'
 require 'tweetstream'
 require 'securerandom'
 
 def connect_db
-  CassandraCQL::Database.new('127.0.0.1:9160')
+  Cql::Client.connect()
 end
 
 def insert_event(args)
-  %{INSERT INTO eventsks.events 
-    (id, app_id, created_at, event) 
-    VALUES (#{args[:id]}, #{args[:app_id]}, #{args[:created_at]}, #{args[:event]})};
-
+  %{INSERT INTO applications.events (created_at, app_id, event) VALUES (now(), #{args[:app_id]}, '#{args[:event]}');}
 end
 
 def connect_twitter
@@ -32,27 +29,32 @@ end
 def execute
 
   db = connect_db()
+  apps = [
+    '4fcd0582-7798-46ac-8ae3-df7ce7890b79',
+    '8a0bb010-bb38-4667-8c37-471efef24993', 
+    'c389039d-1480-499b-86f6-808d3f17ef27'
+  ]
 
-  apps = ['4fcd0582-7798-46ac-8ae3-df7ce7890b79','8a0bb010-bb38-4667-8c37-471efef24993', 'c389039d-1480-499b-86f6-808d3f17ef27']
   TweetStream::Client.new.sample do |status|
 
     begin
       args = {}
       args[:app_id] = apps.sample
-      args[:created_at] = Time.new
-      args[:event] = status.attrs.to_json
-      args[:id]  = SecureRandom.uuid
+      args[:event] = status.attrs.to_json.gsub("'", "''")#.force_encoding("utf-8")
+
       db.execute(insert_event(args))
+      # puts insert_event(args)
+      # puts args[:event]
 
     rescue Exception => e
       puts e
+      puts e.backtrace
+      puts args[:event]
     end
 
   end
 
 end
-
-
 
 
 

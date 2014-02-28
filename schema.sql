@@ -1,7 +1,7 @@
-CREATE KEYSPACE applications
-  WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};
+-- CREATE KEYSPACE applications
+--   WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};
 
-USE applications;
+-- USE applications;
 
 -- CREATE TABLE events (
 --   id timeuuid,
@@ -13,12 +13,42 @@ USE applications;
 
 -- CREATE INDEX events_app_id ON events(app_id);
 
-CREATE TABLE events (
-  id timeuuid PRIMARY KEY,
-  app_id uuid,
-  bucket text,
-  event text,
+-- CREATE TABLE events (
+--   id timeuuid PRIMARY KEY,
+--   app_id uuid,
+--   bucket text,
+--   event text,
+-- );
+
+-- CREATE INDEX events_app_id ON events(app_id);
+-- CREATE INDEX events_on_bucket ON events(bucket);
+
+
+CREATE KEYSPACE so
+  WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};
+
+USE so;
+
+CREATE TABLE mystuff(
+  bucket text, 
+  id timeuuid,
+  app_id uuid,  
+  event text, 
+  PRIMARY KEY(bucket, id)
 );
 
-CREATE INDEX events_app_id ON events(app_id);
-CREATE INDEX events_on_bucket ON events(bucket);
+insert into mystuff(bucket, id, event, app_id) VALUES ('13081615', now(), '90', 4fcd0582-7798-46ac-8ae3-df7ce7890b79);
+insert into mystuff(bucket, id, event, app_id) VALUES ('13081615', now(), '91', 4fcd0582-7798-46ac-8ae3-df7ce7890b79);
+insert into mystuff(bucket, id, event, app_id) VALUES ('13081615', now(), '92', 4fcd0582-7798-46ac-8ae3-df7ce7890b79);
+insert into mystuff(bucket, id, event, app_id) VALUES ('13081615', now(), '93', 4fcd0582-7798-46ac-8ae3-df7ce7890b79);
+insert into mystuff(bucket, id, event, app_id) VALUES ('13081615', now(), '94', 8a0bb010-bb38-4667-8c37-471efef24993);
+insert into mystuff(bucket, id, event, app_id) VALUES ('13081616', now(), '95', 8a0bb010-bb38-4667-8c37-471efef24993);
+insert into mystuff(bucket, id, event, app_id) VALUES ('13081616', now(), '96', 8a0bb010-bb38-4667-8c37-471efef24993);
+insert into mystuff(bucket, id, event, app_id) VALUES ('13081616', now(), '97', 8a0bb010-bb38-4667-8c37-471efef24993);
+insert into mystuff(bucket, id, event, app_id) VALUES ('13081616', now(), '98', c389039d-1480-499b-86f6-808d3f17ef27);
+
+SELECT * FROM mystuff WHERE bucket = '13081616' ORDER BY id DESC LIMIT 2 ;
+
+
+
+

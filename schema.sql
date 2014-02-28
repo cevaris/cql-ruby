@@ -3,32 +3,6 @@ CREATE KEYSPACE applications
 
 USE applications;
 
--- CREATE TABLE events (
---   id timeuuid,
---   bucket text,
---   app_id uuid,
---   event text,
---   PRIMARY KEY(id, bucket)
--- );
-
--- CREATE INDEX events_app_id ON events(app_id);
-
--- CREATE TABLE events (
---   id timeuuid PRIMARY KEY,
---   app_id uuid,
---   bucket text,
---   event text,
--- );
-
--- CREATE INDEX events_app_id ON events(app_id);
--- CREATE INDEX events_on_bucket ON events(bucket);
-
-
--- CREATE KEYSPACE so
---   WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};
-
--- USE so;
-
 CREATE TABLE events(
   bucket text, 
   id timeuuid,
@@ -48,7 +22,3 @@ CREATE TABLE events(
 -- insert into events(bucket, id, event, app_id) VALUES ('13081616', now(), '98', c389039d-1480-499b-86f6-808d3f17ef27);
 
 -- SELECT * FROM events WHERE bucket = '13081616' ORDER BY id DESC LIMIT 2 ;
-
-
-
-

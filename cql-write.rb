@@ -12,7 +12,7 @@ def connect_db
 end
 
 def insert_event(args)
-  %{INSERT INTO applications.events (id, bucket, app_id, event) VALUES (now(), '#{args[:bucket]}', #{args[:app_id]}, '#{args[:event]}');}
+  %{INSERT INTO applications.events (bucket, id, app_id, event) VALUES ('#{args[:bucket]}', now(), #{args[:app_id]}, '#{args[:event]}');}
 end
 
 def connect_twitter
